@@ -71,12 +71,13 @@ def main():
     model = model.cuda()
 
     # Data loading code
-    img_paths = glob(r'D:\Project\CollegeDesign\dataset\Brats2018FoulModel2D\trainImage\*')
-    mask_paths = glob(r'D:\Project\CollegeDesign\dataset\Brats2018FoulModel2D\trainMask\*')
+    img_paths = glob(r'D:\Project\CollegeDesign\dataset\Brats2018FoulModel2D\testImage\*')
+    mask_paths = glob(r'D:\Project\CollegeDesign\dataset\Brats2018FoulModel2D\testMask\*')
 
-
-    train_img_paths, val_img_paths, train_mask_paths, val_mask_paths = \
-        train_test_split(img_paths, mask_paths, test_size=0.2, random_state=41)
+    val_img_paths = img_paths
+    val_mask_paths = mask_paths
+    #train_img_paths, val_img_paths, train_mask_paths, val_mask_paths = \
+    #    train_test_split(img_paths, mask_paths, test_size=0.2, random_state=41)
 
     model.load_state_dict(torch.load('models/%s/model.pth' %args.name))
     model.eval()
@@ -89,7 +90,7 @@ def main():
         pin_memory=True,
         drop_last=False)
 
-    if args.mode == "GetPicture":
+    if val_args.mode == "GetPicture":
 
         """
         获取并保存模型生成的标签图
@@ -168,7 +169,7 @@ def main():
             imsave(val_gt_path + etName, (ET_Label * 255).astype('uint8'))
         print("Done!")
 
-    if args.mode == "Calculate":
+    if val_args.mode == "Calculate":
         """
         计算各种指标:Dice、Sensitivity、PPV
         """
